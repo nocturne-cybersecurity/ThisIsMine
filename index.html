@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es" translate="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Para ti, mi amor — Nuestra historia</title>
+  <meta name="description" content="Una carta web animada, con detalles, fotos y momentos que me hacen agradecerte cada día." />
+  <style>
+    :root{
+      --bg:#0e0f1a;
+      --panel:#15162a;
+      --panel-soft:#1d1f38;
+      --text:#e9ecff;
+      --muted:#b9c0ff;
+      --accent:#ff5c8a;
+      --accent-2:#7c9bff;
+      --gold:#ffd166;
+      --shadow: rgba(0,0,0,.35);
+      --radius:18px;
+      --radius-sm:12px;
+      --radius-lg:26px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 20% 10%, #151834, var(--bg)),
+                  radial-gradient(900px 500px at 80% 70%, #101225, var(--bg));
+      color:var(--text);
+      font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      overflow-x:hidden;
+      perspective: 1200px; /* base 3D */
+    }
+    a{color:var(--accent)}
+    h1,h2,h3{margin:0 0 .5rem}
+    h1{
+      font-size: clamp(2.2rem, 4vw, 3.6rem);
+      letter-spacing:.5px
+    }
+    h2{font-size: clamp(1.6rem, 2.8vw, 2.2rem);}
+    h3{font-size: clamp(1.2rem, 2vw, 1.4rem); color:var(--muted)}
+
+    /* Layout */
+    .wrap{
+      max-width: 1080px;
+      margin:0 auto;
+      padding: 20px;
+    }
+    section{
+      background: linear-gradient(180deg, var(--panel), var(--panel-soft));
+      border:1px solid rgba(255,255,255,.06);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px var(--shadow);
+      margin: 28px 0;
+      overflow: hidden;
+    }
+    .section-inner{padding: 28px;}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:26px;
+    }
+    @media (max-width:860px){
+      .grid{grid-template-columns: 1fr}
+      .hero-cta{flex-direction:column}
+    }
+
+    /* Hero */
+    .hero{
+      position:relative;
+      isolation:isolate;
+    }
+    .hero::before{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(250px 250px at 10% 20%, rgba(255,92,138,.28), transparent 70%),
+        radial-gradient(350px 350px at 80% 30%, rgba(124,155,255,.22), transparent 70%);
+      pointer-events:none;
+      z-index:-1;
+    }
+    .hero .title{
+      display:flex; align-items:flex-end; gap:10px;
+    }
+    .hero .title svg{
+      width:58px; height:58px; filter: drop-shadow(0 6px 12px rgba(255,92,138,.25));
+      animation: floatY 5s ease-in-out infinite;
+    }
+    @keyframes floatY{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+    .hero-cta{
+      display:flex; gap:14px; align-items:center; margin-top:18px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      background: linear-gradient(180deg, var(--accent), #ff3f78);
+      color:#fff; font-weight:600; letter-spacing:.2px;
+      border:none; border-radius: 999px; padding: 12px 18px; cursor:pointer;
+      box-shadow: 0 10px 18px rgba(255,92,138,.25);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .btn:hover{transform: translateY(-2px); box-shadow:0 16px 26px rgba(255,92,138,.32)}
+    .btn-alt{
+      background: linear-gradient(180deg, var(--accent-2), #5f7dff);
+      box-shadow: 0 10px 18px rgba(124,155,255,.25);
+    }
+
+    /* Decorative SVG band */
+    .band{
+      position:relative; height: 80px; background: transparent;
+    }
+    .band svg{position:absolute; left:0; right:0; width:100%; height:100%;}
+    .band .shine{
+      animation: shineMove 8s linear infinite;
+      opacity:.35;
+    }
+    @keyframes shineMove{
+      0%{transform:translateX(-10%)}
+      100%{transform:translateX(10%)}
+    }
+
+    /* Romantic paragraph */
+    .romantic p{
+      margin:.7rem 0;
+      color: var(--text);
+    }
+    .quote{
+      display:block; padding:14px 16px; border-left:3px solid var(--gold);
+      background: rgba(255,209,102,.06); border-radius: var(--radius-sm);
+      color:#fff;
+    }
+
+    /* Carousel */
+    .carousel{
+      position:relative;
+      border-radius: var(--radius);
+      overflow: hidden; /* cambiar a hidden para evitar saltos parciales */
+      background: #0c0d18;
+      border:1px solid rgba(255,255,255,.06);
+    }
+    .carousel-track{
+      display:flex; transition: transform .55s cubic-bezier(.2,.8,.2,1);
+      will-change: transform;
+      align-items:center; /* centra verticalmente las imágenes según su altura */
+      transform: translate3d(0,0,0); /* forzar capa compuesta */
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    .slide{
+      /* cada slide tiene anchura fija igual al contenedor para evitar cálculos variables */
+      flex: 0 0 100%;
+      display:flex; align-items:center; justify-content:center;
+      padding: 18px 0;
+      background: #0f1122;
+      position:relative;
+      height:auto; /* permite ajustar según la imagen */
+    }
+    .slide img{
+      width:auto;
+      height:auto;
+      max-width:100%;
+      max-height:60vh; /* limita altura para evitar recortes en pantallas pequeñas */
+      object-fit:contain; /* muestra la imagen completa sin recortar */
+      filter: saturate(1.06) contrast(1.06);
+      border-radius:10px;
+      box-shadow: 0 8px 28px rgba(0,0,0,.6);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .slide .caption{
+      position:absolute; bottom:12px; left:12px;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(6px);
+      padding:8px 10px; border-radius: 10px; color:#fff;
+      font-weight:600; font-size:13px; max-width:calc(100% - 40px);
+    }
+    .carousel .nav{
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 6px;
+    }
+    .arrow{
+      width:42px; height:42px; border-radius:50%;
+      border:1px solid rgba(255,255,255,.15);
+      backdrop-filter: blur(5px);
+      background: rgba(255,255,255,.06);
+      display:grid; place-items:center; cursor:pointer;
+      color:#fff; transition: transform .2s ease, background .2s ease;
+    }
+    .arrow:hover{transform: scale(1.05); background: rgba(255,255,255,.12)}
+
+    .dots{
+      position:absolute; left:50%; bottom:12px; transform:translateX(-50%);
+      display:flex; gap:8px;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: rgba(255,255,255,.22); cursor:pointer;
+      transition: background .2s ease, transform .2s ease;
+    }
+    .dot.active{background: var(--accent); transform: scale(1.5)}
+
+    /* 3D Photo Cube */
+    .stage{
+      height: 420px; position:relative; display:grid; place-items:center;
+      perspective: 1200px;
+      background: linear-gradient(180deg,#0e1022,#0b0d19);
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.06);
+      overflow:hidden;
+    }
+    .cube{
+      width:280px; height:280px; position:relative; transform-style: preserve-3d;
+      animation: spin 18s linear infinite;
+    }
+    @keyframes spin{
+      0%{transform: rotateX(-10deg) rotateY(0deg)}
+      100%{transform: rotateX(-10deg) rotateY(360deg)}
+    }
+    .face{
+      position:absolute; inset:0; background:#11142a; border:1px solid rgba(255,255,255,.06);
+      display:grid; place-items:center; overflow:hidden;
+    }
+    .face img{width:100%; height:100%; object-fit:cover}
+    .face--front{transform: translateZ(140px)}
+    .face--back{transform: translateZ(-140px) rotateY(180deg)}
+    .face--right{transform: rotateY(90deg) translateZ(140px)}
+    .face--left{transform: rotateY(-90deg) translateZ(140px)}
+    .face--top{transform: rotateX(90deg) translateZ(140px)}
+    .face--bottom{transform: rotateX(-90deg) translateZ(140px)}
+
+    /* Timeline */
+    .timeline{
+      display:grid; gap:18px;
+    }
+    .moment{
+      display:flex; gap:14px; align-items:flex-start;
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .moment svg{flex:0 0 auto; width:26px; height:26px}
+    .moment strong{color:#fff}
+
+    /* Footer & floating hearts canvas */
+    footer{
+      position:relative; padding: 20px; text-align:center; color:var(--muted);
+      background: linear-gradient(180deg, var(--panel-soft), var(--panel));
+      border-top:1px solid rgba(255,255,255,.06);
+    }
+    canvas#hearts{
+      position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.28;
+    }
+
+    /* Small utility */
+    .pill{
+      display:inline-block; padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14); color:#fff; background: rgba(255,255,255,.06);
+    }
+    .sep{height:1px; background: rgba(255,255,255,.08); margin: 16px 0}
+  </style>
+</head>
+<body>
+
+  <!-- Floating hearts canvas background -->
+  <canvas id="hearts"></canvas>
+
+  <div class="wrap">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="section-inner">
+        <div class="title">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <defs>
+              <linearGradient id="gHeart" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ff5c8a"/>
+                <stop offset="1" stop-color="#ff3f78"/>
+              </linearGradient>
+            </defs>
+            <path d="M60 98 L21 60 C6 46 7 23 25 13 C38 5 53 9 60 22 C67 9 82 5 95 13 C113 23 114 46 99 60 Z"
+                  fill="url(#gHeart)" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+          </svg>
+          <div>
+            <h1>Para ti, mi niña</h1>
+            <h3>Una carta, para contar nuestra historia y camino juntos. contigo grecia, formamos un camino.
+               Un camino lleno de amor, risas y momentos divertidos que nunca olvidare. 
+            </h3>
+          </div>
+        </div>
+        <div class="hero-cta">
+          <button class="btn" id="scrollToCarousel">
+            <!-- Heart icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s-6.5-4.4-9.3-7.2C-0.2 11.1 1.1 6.9 4.6 6.1c2-.4 3.5.1 4.6 1.3 1.1-1.2 2.6-1.7 4.6-1.3 3.5.8 4.8 5 1.9 7.7C18.5 16.6 12 21 12 21z"
+                    fill="#fff"/>
+            </svg>
+            Ver recuerdos
+          </button>
+        </div>
+      </div>
+      <div class="band" aria-hidden="true">
+        <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#7c9bff"/>
+              <stop offset="1" stop-color="#ff5c8a"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,120 C150,160 300,80 450,120 C600,160 750,80 900,120 C1050,160 1200,80 1200,120 L1200,200 L0,200 Z"
+                fill="url(#wave)" opacity="0.25"/>
+          <path class="shine" d="M0,100 C150,140 300,60 450,100 C600,140 750,60 900,100 C1050,140 1200,60 1200,100"
+                stroke="#fff" stroke-opacity=".35" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- MENSAJE ROMÁNTICO -->
+    <section class="romantic">
+      <div class="section-inner grid">
+        <div>
+          <h2>Lo que siento por ti mi amor</h2>
+          <p>Eres mi lugar favorito del mundo, incluso cuando el mundo se queda en silencio. Con tu risa se encienden las luces, y con tu abrazo todo vuelve a casa.</p>
+          <p>Contigo aprendí que el tiempo no se mide en horas, sino en miradas que duran, en cafés compartidos, y en planes que se vuelven recuerdos brillando en la memoria.</p>
+          <span class="quote">Si te elijo hoy, es porque ya te elegí en todos mis días. Y si me pierdo, ojalá sea entre tus manos.</span>
+        </div>
+        <div>
+          <h2>Promesas pequeñas que valen mucho</h2>
+          <p>Guardar tus secretos, celebrar tus victorias, acompañar tus pasos. Hacer de lo simple, algo nuestro. Y de lo nuestro, algo inolvidable.</p>
+          <p>Gracias por ser mi coincidencia favorita. Por enseñarme que el amor no es ruido: es certeza, es calma, es quedarnos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARRUSEL DE RECUERDOS -->
+    <section id="recuerdos">
+      <div class="section-inner">
+        <h2>Nuestros recuerdos</h2>
+        <p>Algunas fotos que cuentan partes de nuestra historia juntos. Usa las flechas para ver jsjs.</p>
+        <div class="carousel" aria-roledescription="carrusel" aria-label="Carrusel de fotos">
+          <div class="carousel-track" id="track">
+            <!-- REEMPLAZA_AQUI: pon tus fotos (src) -->
+            <div class="slide">
+              <img src="fotos/IMG_20250203_180753342_MFNR.jpg" alt="IMG_20250203_180753342_MFNR" />
+              <div class="caption">Ese día contigo, inolvidable.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250315_162657531_MFNR_PORTRAIT.jpg" alt="IMG_20250315_162657531_MFNR_PORTRAIT" />
+              <div class="caption">Tu sonrisa lo ilumina todo.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250315_162659935_MFNR_PORTRAIT.jpg" alt="IMG_20250315_162659935_MFNR_PORTRAIT" />
+              <div class="caption">Nuestro paseo favorito.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250425_172330925_MFNR_PORTRAIT.jpg" alt="IMG_20250425_172330925_MFNR_PORTRAIT" />
+              <div class="caption">Pequeños momentos, grandes recuerdos.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250731_180809662_HDR.jpg" alt="IMG_20250731_180809662_HDR" />
+              <div class="caption">Tarde de verano contigo.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250731_180846936_HDR.jpg" alt="IMG_20250731_180846936_HDR" />
+              <div class="caption">Risas que se quedan.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250817_184748450_HDR.jpg" alt="IMG_20250817_184748450_HDR" />
+              <div class="caption">Siempre vuelvo a este abrazo.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250817_184801174_HDR~2.jpg" alt="IMG_20250817_184801174_HDR~2" />
+              <div class="caption">Promesa de muchas más salidas.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250817_184832975_HDR~2.jpg" alt="IMG_20250817_184832975_HDR~2" />
+              <div class="caption">Mi lugar favorito: a tu lado.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250817_184839662_HDR.jpg" alt="IMG_20250817_184839662_HDR" />
+              <div class="caption">Cuando todo es más fácil contigo.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250828_175216806_MFNR.jpg" alt="IMG_20250828_175216806_MFNR" />
+              <div class="caption">Un día que guarda mil sonrisas.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250924_160800181_MFNR.jpg" alt="IMG_20250924_160800181_MFNR" />
+              <div class="caption">Tu mirada, mi paz.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251002_162111206_MFNR.jpg" alt="IMG_20251002_162111206_MFNR" />
+              <div class="caption">Contigo todo se siente en casa.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251002_162211620_MFNR.jpg" alt="IMG_20251002_162211620_MFNR" />
+              <div class="caption">Café, charla y complicidad.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251009_160134704_MFNR.jpg" alt="IMG_20251009_160134704_MFNR" />
+              <div class="caption">Nuestros recuerdos</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251023_152948717_MFNR_PORTRAIT.jpg" alt="IMG_20251023_152948717_MFNR_PORTRAIT" />
+              <div class="caption">Ese instante que me hace sonreír.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251023_152958883_MFNR.jpg" alt="IMG_20251023_152958883_MFNR" />
+              <div class="caption">Risas cómplices.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251023_153025140_MFNR_PORTRAIT.jpg" alt="IMG_20251023_153025140_MFNR_PORTRAIT" />
+              <div class="caption">Siempre tú, siempre nosotros.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251025_181056324_MFNR_PORTRAIT.jpg" alt="IMG_20251025_181056324_MFNR_PORTRAIT" />
+              <div class="caption">Gracias por cada día compartido.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251025_181121357_MFNR_PORTRAIT.jpg" alt="IMG_20251025_181121357_MFNR_PORTRAIT" />
+              <div class="caption">Tu abrazo, mi refugio.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251025_181142144_MFNR_PORTRAIT.jpg" alt="IMG_20251025_181142144_MFNR_PORTRAIT" />
+              <div class="caption">Pequeñas aventuras, grandes recuerdos.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251025_181514003_HDR.jpg" alt="IMG_20251025_181514003_HDR" />
+              <div class="caption">Nuestro mejor día, hasta ahora.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20251029_175744823_HDR.jpg" alt="IMG_20251029_175744823_HDR" />
+              <div class="caption">Te pienso y sonrío.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG-20241003-WA0118.jpg" alt="IMG-20241003-WA0118" />
+              <div class="caption">Siempre me sorprendes.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20241221_204712158_MFNR.jpg" alt="IMG_20241221_204712158_MFNR" />
+              <div class="caption">Cada día contigo suma.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG-20241221-WA0010.jpg" alt="IMG-20241221-WA0010" />
+              <div class="caption">Hoy, mañana, siempre.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG-20241226-WA0018.jpg" alt="IMG-20241226-WA0018" />
+              <div class="caption">Momentos que me hacen feliz.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250101_193254552_MFNR.jpg" alt="IMG_20250101_193254552_MFNR" />
+              <div class="caption">Un inicio de año perfecto.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/IMG_20250127_185127885_MFNR.jpg" alt="IMG_20250127_185127885_MFNR" />
+              <div class="caption">Contigo todo tiene sentido.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/Snapchat-1597428156.jpg" alt="Snapchat-1597428156" />
+              <div class="caption">Pequeñas locuras juntos.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/Snapchat-465360406.jpg" alt="Snapchat-465360406" />
+              <div class="caption">Tu risa me enamora siempre.</div>
+            </div>
+            <div class="slide">
+              <img src="fotos/Snapchat-785941566.jpg" alt="Snapchat-785941566" />
+              <div class="caption">Mi persona favorita.</div>
+            </div>
+          </div>
+          <div class="nav">
+            <button class="arrow" id="prev" aria-label="Anterior">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                <path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="arrow" id="next" aria-label="Siguiente">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+                <path d="M9 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="dots" id="dots" aria-hidden="false"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERÍA 3D: CUBO CON FOTOS -->
+    <section id="galeria3d">
+      <div class="section-inner">
+        <h2>Nuestro cubo de momentos</h2>
+        <p>Un pequeño cuadrito con 6 fotitos que mas me gustan de ti jsjs</p>
+        <div class="stage">
+          <div class="cube">
+            <!-- REEMPLAZA_AQUI: las 6 fotos del cubo -->
+            <div class="face face--front"><img src="fotos/IMG-20241003-WA0118.jpg" alt="IMG-20241003-WA0118" /></div>
+            <div class="face face--back"><img src="fotos/IMG_20241221_204712158_MFNR.jpg" alt="IMG_20241221_204712158_MFNR" /></div>
+            <div class="face face--right"><img src="fotos/IMG-20241221-WA0010.jpg" alt="IMG-20241221-WA0010" /></div>
+            <div class="face face--left"><img src="fotos/IMG-20241226-WA0018.jpg" alt="IMG-20241226-WA0018" /></div>
+            <div class="face face--top"><img src="fotos/IMG_20250101_193254552_MFNR.jpg" alt="IMG_20250101_193254552_MFNR" /></div>
+            <div class="face face--bottom"><img src="fotos/IMG_20250127_185127885_MFNR.jpg" alt="IMG_20250127_185127885_MFNR" /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LÍNEA DEL TIEMPO -->
+    <section>
+      <div class="section-inner">
+        <h2>Nuestra línea del tiempo</h2>
+        <div class="timeline">
+          <div class="moment">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="#7c9bff" stroke-width="2"/>
+              <path d="M12 7v5l3 3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <strong>El primer mensaje</strong>
+              <p>Ese “hola” fue un hogar nuevo. Pequeño, sincero, y suficiente para cambiar el resto de mis días.</p>
+            </div>
+          </div>
+          <div class="moment">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 21s-6.5-4.4-9.3-7.2C-0.2 11.1 1.1 6.9 4.6 6.1c2-.4 3.5.1 4.6 1.3 1.1-1.2 2.6-1.7 4.6-1.3 3.5.8 4.8 5 1.9 7.7C18.5 16.6 12 21 12 21z"
+                    fill="#ff5c8a"/>
+            </svg>
+            <div>
+              <strong>Nuestra primera salida</strong>
+              <p>Cuando todo fue sencillo: una caminata, dos sonrisas, y el universo haciéndose pequeño para vernos mejor.</p>
+            </div>
+          </div>
+          <div class="moment">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="3" stroke="#ffd166" stroke-width="2"/>
+              <path d="M8 12h8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div>
+              <strong>Risas que se quedan</strong>
+              <p>Hay momentos que no se olvidan porque suenan a nosotros. Este amor suena a futuro bonito.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CIERRE -->
+    <section>
+      <div class="section-inner">
+        <h2>Siempre vuelvo a ti</h2>
+        <p>Mi vida contigo es un “sí” constante. Gracias por la paz, por la chispa, por quedarte. Te amo.</p>
+        <div class="sep"></div>
+        <p class="muted">Hecho con paciencia y con prisas bonitas. Si algo falla, siempre podemos reintentarlo juntos.</p>
+      </div>
+    </section>
+
+    <footer>
+      <small>Con cariño, Rodrigo, para ti, grecia, la persona que mas amo en este mundo 🥰</small>
+    </footer>
+  </div>
+
+  <script>
+    /* Smooth scroll buttons */
+    const scrollToCarousel = document.getElementById('scrollToCarousel');
+    const scrollToCube = document.getElementById('scrollToCube');
+    scrollToCarousel?.addEventListener('click', () => {
+      document.getElementById('recuerdos')?.scrollIntoView({behavior:'smooth'});
+    });
+    scrollToCube?.addEventListener('click', () => {
+      document.getElementById('galeria3d')?.scrollIntoView({behavior:'smooth'});
+    });
+
+    /* Carousel logic */
+    const track = document.getElementById('track');
+    const slides = Array.from(track?.children || []);
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    const dotsWrap = document.getElementById('dots');
+    let index = 0;
+
+    function updateCarousel(i){
+      index = (i + slides.length) % slides.length;
+      // usar translate3d para suavizar y activar aceleración por hardware
+      track.style.transform = `translate3d(-${index*100}%,0,0)`;
+      Array.from(dotsWrap.children).forEach((d,k)=>{
+        d.classList.toggle('active', k===index);
+      });
+    }
+    function buildDots(){
+      slides.forEach((_,i)=>{
+        const dot = document.createElement('button');
+        dot.className = 'dot';
+        dot.setAttribute('aria-label', `Ir a la imagen ${i+1}`);
+        dot.addEventListener('click', ()=>updateCarousel(i));
+        dotsWrap.appendChild(dot);
+      });
+      updateCarousel(0);
+    }
+    prev?.addEventListener('click', ()=>updateCarousel(index-1));
+    next?.addEventListener('click', ()=>updateCarousel(index+1));
+    buildDots();
+
+    /* Autoplay removido: ya no se cambian solas automáticamente */
+    // antes aquí había setInterval y handlers mouseenter/mouseleave; eliminados para desactivar autoplay
+
+    /* Floating hearts particles on canvas */
+    const canvas = document.getElementById('hearts');
+    const ctx = canvas.getContext('2d');
+    let W, H, hearts = [];
+    function resize(){
+      W = canvas.width = innerWidth * devicePixelRatio;
+      H = canvas.height = innerHeight * devicePixelRatio;
+    }
+    addEventListener('resize', resize);
+    resize();
+
+    function rand(min,max){return Math.random()*(max-min)+min}
+    function makeHeart(){
+      return {
+        x: rand(0,W),
+        y: rand(H*0.2, H),
+        vx: rand(-0.2,0.2),
+        vy: rand(-0.35,-0.1),
+        size: rand(6,16) * devicePixelRatio,
+        hue: rand(330,360),
+        alpha: rand(0.15,0.4)
+      };
+    }
+    for(let i=0;i<90;i++) hearts.push(makeHeart());
+
+    function drawHeart(x,y,s,h,a){
+      ctx.save();
+      ctx.translate(x,y);
+      ctx.scale(s/16, s/16);
+      ctx.beginPath();
+      // simple heart path
+      ctx.moveTo(0,4);
+      ctx.bezierCurveTo(0,-4, -8,-4, -8,4);
+      ctx.bezierCurveTo(-8,12, 0,16, 0,20);
+      ctx.bezierCurveTo(0,16, 8,12, 8,4);
+      ctx.bezierCurveTo(8,-4, 0,-4, 0,4);
+      ctx.closePath();
+      ctx.fillStyle = `hsla(${h}, 80%, 60%, ${a})`;
+      ctx.shadowColor = `hsla(${h},80%,60%, ${a})`;
+      ctx.shadowBlur = 14;
+      ctx.fill();
+      ctx.restore();
+    }
+    function tick(){
+      ctx.clearRect(0,0,W,H);
+      hearts.forEach(h=>{
+        h.x += h.vx*2; h.y += h.vy*2;
+        if(h.y < -30*devicePixelRatio) Object.assign(h, makeHeart(), {y:H+20});
+        drawHeart(h.x,h.y,h.size,h.hue,h.alpha);
+      });
+      requestAnimationFrame(tick);
+    }
+    tick();
+
+    /* Subtle parallax on hero SVG heart */
+    const heroHeart = document.querySelector('.hero .title svg');
+    addEventListener('mousemove', (e)=>{
+      const x = (e.clientX / innerWidth - .5) * 10;
+      const y = (e.clientY / innerHeight - .5) * 10;
+      heroHeart.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    }, {passive:true});
+
+    /* Accessibility: keyboard arrows for carousel */
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 'ArrowLeft') prev?.click();
+      if(e.key === 'ArrowRight') next?.click();
+    });
+  </script>
+</body>
+</html>
